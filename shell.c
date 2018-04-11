@@ -40,10 +40,11 @@ int exe_process() {
     }
     exit(0);
   } else {
-    if (!background)
-      wait(NULL);
+
+    if (background)
+      sleep(60);
     else
-      exit(0);
+      wait(NULL);
     return 1;
   }
 }
@@ -80,7 +81,13 @@ void parse(char * line) {
     y++;
   }
 
-  command[arg] = NULL;
+  if (command[arg - 1][0] == '&') {
+    background = 1;
+    command[arg - 1] = NULL;
+  } else {
+    background = 0;
+    command[arg] = NULL;
+  }
 }
 
 int main() {
