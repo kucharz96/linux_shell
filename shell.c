@@ -1,4 +1,4 @@
-
+#include <fcntl.h>
 #include <stdio.h> 
 #include <stdlib.h>
 #include <sys/types.h>
@@ -16,6 +16,13 @@ void handler(int signum) {
   printf("signal!\n");
   return;
 }
+
+
+void przekierowanie(char * output){
+int fileDescriptor;
+fileDescriptor = open(output, O_CREAT | O_TRUNC | O_WRONLY, 0600); 
+dup2(fileDescriptor, STDOUT_FILENO); 
+close(fileDescriptor);}
 
 void free_d() {
   int i, j;
@@ -45,7 +52,7 @@ int exe_process() {
   if (p1 == -1) {
     return 0;
   } else if (p1 == 0) {
-
+przekierowanie("a.txt");
     if (execvp(command[0][0], command[0]) < 0) {
       return 0;
     }
@@ -79,7 +86,7 @@ int exe_pipped_processes() {
   while (c <= pipe_command) {
     pid = fork();
     if (pid == 0) {
-
+przekierowanie("a.txt");
       //if not last command
       if (c < pipe_command) {
         if (dup2(pipefds[j + 1], 1) < 0) {
